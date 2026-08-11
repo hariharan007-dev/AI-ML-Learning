@@ -1,0 +1,47 @@
+RandomForestClassifier:
+accuracy: 0.9748549323017408
+classification report
+              precision    recall  f1-score   support
+
+           0       0.97      1.00      0.99       903
+           1       0.99      0.81      0.89       131
+
+    accuracy                           0.97      1034
+   macro avg       0.98      0.90      0.94      1034
+weighted avg       0.98      0.97      0.97      1034
+
+LinearSVC:
+accuracy: 0.9816247582205029
+classification report
+              precision    recall  f1-score   support
+
+           0       0.98      1.00      0.99       903
+           1       0.97      0.89      0.92       131
+
+    accuracy                           0.98      1034
+   macro avg       0.98      0.94      0.96      1034
+weighted avg       0.98      0.98      0.98      1034
+
+MultinomialNB:
+accuracy: 0.9526112185686654
+classification report
+              precision    recall  f1-score   support
+
+           0       0.95      1.00      0.97       903
+           1       1.00      0.63      0.77       131
+
+    accuracy                           0.95      1034
+   macro avg       0.97      0.81      0.87      1034
+weighted avg       0.96      0.95      0.95      1034
+
+LogisticRegression:
+accuracy: 0.9642166344294004
+classification report
+              precision    recall  f1-score   support
+
+           0       0.96      1.00      0.98       903
+           1       0.96      0.75      0.84       131
+
+    accuracy                           0.96      1034
+   macro avg       0.96      0.87      0.91      1034
+weighted avg       0.96      0.96      0.96      1034

@@ -1,0 +1,1122 @@
+<!DOCTYPE html><html lang="en"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>SCAMGUARD // Threat Analysis</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+    :root {
+        --bg: #050807;
+        --panel: #0a0f0c;
+        --panel2: #0d1410;
+        --border: #1c2a21;
+        --border-bright: #2a3c30;
+        --text: #e8eee9;
+        --muted: #718078;
+        --green: #39ff88;
+        --red: #ff4d5a;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: "Space Grotesk", sans-serif;
+        min-height: 100vh;
+    }
+
+    body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+
+        background-image:
+            linear-gradient(rgba(57,255,136,.025) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(57,255,136,.025) 1px, transparent 1px);
+
+        background-size: 40px 40px;
+    }
+
+    .page {
+        width: min(1120px, 100%);
+        margin: auto;
+        padding: 0 24px;
+    }
+
+    /* HEADER */
+
+    .topbar {
+        height: 78px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .brand-mark {
+        width: 38px;
+        height: 38px;
+
+        border: 1px solid var(--green);
+        color: var(--green);
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        font-family: "JetBrains Mono", monospace;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .brand-name {
+        font-size: 16px;
+        font-weight: 700;
+        letter-spacing: 1px;
+    }
+
+    .brand-sub {
+        margin-top: 2px;
+
+        color: var(--muted);
+
+        font-family: "JetBrains Mono", monospace;
+        font-size: 8px;
+        letter-spacing: 1px;
+    }
+
+    .system-status {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        color: var(--muted);
+
+        font-family: "JetBrains Mono", monospace;
+        font-size: 10px;
+    }
+
+    .status-light {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+
+        background: var(--green);
+        box-shadow: 0 0 10px var(--green);
+    }
+
+    /* HERO */
+
+    .intro {
+        padding: 100px 0 65px;
+        max-width: 850px;
+    }
+
+    .terminal-label {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+
+        color: var(--green);
+
+        font-family: "JetBrains Mono", monospace;
+        font-size: 10px;
+        letter-spacing: 1.5px;
+
+        margin-bottom: 25px;
+    }
+
+    .terminal-label span {
+        color: #526259;
+    }
+
+    .intro h1 {
+        font-size: clamp(42px, 7vw, 76px);
+        line-height: .98;
+        letter-spacing: -3px;
+        font-weight: 600;
+    }
+
+    .intro h1 span {
+        color: var(--muted);
+    }
+
+    .intro p {
+        max-width: 560px;
+        margin-top: 25px;
+
+        color: var(--muted);
+
+        font-size: 15px;
+        line-height: 1.7;
+    }
+
+    /* ANALYZER */
+
+    .analyzer {
+        border: 1px solid var(--border);
+        background: var(--panel);
+    }
+
+    .panel-header {
+        min-height: 90px;
+        padding: 20px 24px;
+
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        border-bottom: 1px solid var(--border);
+    }
+
+    .panel-number {
+        color: var(--green);
+
+        font-family: "JetBrains Mono", monospace;
+        font-size: 9px;
+        letter-spacing: 1px;
+    }
+
+    .panel-header h2 {
+        margin-top: 6px;
+        font-size: 19px;
+        font-weight: 500;
+    }
+
+    .model-info {
+        text-align: right;
+        font-family: "JetBrains Mono", monospace;
+    }
+
+    .model-info span {
+        display: block;
+        color: var(--muted);
+        font-size: 8px;
+        margin-bottom: 5px;
+    }
+
+    .model-info strong {
+        color: var(--green);
+        font-size: 10px;
+    }
+
+    /* TEXT AREA */
+
+    .terminal {
+        margin: 24px;
+        border: 1px solid var(--border-bright);
+        background: #050906;
+    }
+
+    .terminal-bar {
+        height: 34px;
+        padding: 0 12px;
+
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        border-bottom: 1px solid var(--border);
+
+        color: #526259;
+
+        font-family: "JetBrains Mono", monospace;
+        font-size: 9px;
+    }
+
+    .terminal-dots {
+        display: flex;
+        gap: 5px;
+    }
+
+    .terminal-dots span {
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: #35443b;
+    }
+
+    textarea {
+        display: block;
+
+        width: 100%;
+        min-height: 220px;
+
+        resize: vertical;
+
+        border: none;
+        outline: none;
+
+        background: transparent;
+        color: var(--text);
+
+        padding: 20px;
+
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+        line-height: 1.8;
+    }
+
+    textarea::placeholder {
+        color: #35443b;
+    }
+
+    /* BUTTON */
+
+    .action-row {
+        margin: 0 24px 24px;
+
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .input-hint {
+        color: #526259;
+
+        font-family: "JetBrains Mono", monospace;
+        font-size: 9px;
+    }
+
+    .input-hint span {
+        color: var(--green);
+    }
+
+    button {
+        border: 1px solid var(--green);
+
+        background: var(--green);
+        color: #031008;
+
+        padding: 13px 20px;
+
+        font-family: "JetBrains Mono", monospace;
+        font-size: 10px;
+        font-weight: 700;
+
+        cursor: pointer;
+
+        transition: .2s;
+    }
+
+    button span {
+        margin-left: 15px;
+    }
+
+    button:hover {
+        background: #8affb6;
+    }
+
+    button:disabled {
+        opacity: .5;
+        cursor: wait;
+    }
+
+    /* RESULT */
+
+    .result {
+        display: none;
+
+        margin: 0 24px 24px;
+
+        border: 1px solid var(--border-bright);
+        background: var(--panel2);
+    }
+
+    .result.show {
+        display: block;
+    }
+
+    .result-header {
+        padding: 22px;
+
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        border-bottom: 1px solid var(--border);
+    }
+
+    .result-label {
+        color: var(--muted);
+
+        font-family: "JetBrains Mono", monospace;
+        font-size: 9px;
+        letter-spacing: 1px;
+    }
+
+    .prediction {
+        margin-top: 8px;
+
+        font-family: "JetBrains Mono", monospace;
+        font-size: 22px;
+        font-weight: 700;
+    }
+
+    .safe {
+        color: var(--green);
+    }
+
+    .danger {
+        color: var(--red);
+    }
+
+    .risk {
+        padding: 7px 12px;
+
+        border: 1px solid;
+
+        font-family: "JetBrains Mono", monospace;
+        font-size: 9px;
+        font-weight: 700;
+    }
+
+    .safe-bg {
+        color: var(--green);
+        border-color: #123b25;
+        background: #07150d;
+    }
+
+    .danger-bg {
+        color: var(--red);
+        border-color: #3b1519;
+        background: #18090b;
+    }
+
+    .result-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .metric {
+        padding: 20px 22px;
+        border-right: 1px solid var(--border);
+    }
+
+    .metric:last-child {
+        border-right: none;
+    }
+
+    .metric-label {
+        color: var(--muted);
+
+        font-family: "JetBrains Mono", monospace;
+        font-size: 8px;
+
+        margin-bottom: 8px;
+    }
+
+    .metric-value {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 14px;
+    }
+
+    /* THREAT INDICATORS */
+
+    .threat-indicators {
+        padding: 22px;
+
+        border-top: 1px solid var(--border);
+    }
+
+    #indicators {
+        color: var(--text);
+
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        line-height: 2;
+    }
+
+    .indicator {
+        padding: 6px 0;
+        color: var(--red);
+    }
+
+    .no-threat {
+        color: var(--green);
+    }
+
+    /* ANALYSIS STATUS */
+
+    .analysis-status {
+        padding: 12px 22px;
+
+        border-top: 1px solid var(--border);
+
+        color: #526259;
+
+        font-family: "JetBrains Mono", monospace;
+        font-size: 8px;
+
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    /* INFO */
+
+    .system-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+
+        gap: 1px;
+
+        background: var(--border);
+
+        margin-top: 1px;
+    }
+
+    .info-card {
+        min-height: 210px;
+
+        padding: 24px;
+
+        background: var(--bg);
+    }
+
+    .card-index {
+        color: #526259;
+
+        font-family: "JetBrains Mono", monospace;
+        font-size: 9px;
+
+        margin-bottom: 35px;
+    }
+
+    .info-card h3 {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+
+        letter-spacing: .5px;
+
+        margin-bottom: 13px;
+    }
+
+    .info-card p {
+        color: var(--muted);
+
+        font-size: 12px;
+        line-height: 1.7;
+    }
+
+    .card-tech {
+        display: inline-block;
+
+        margin-top: 20px;
+
+        color: var(--green);
+
+        font-family: "JetBrains Mono", monospace;
+        font-size: 8px;
+    }
+
+    /* FOOTER */
+
+    footer {
+        display: flex;
+        justify-content: space-between;
+
+        padding: 28px 0;
+
+        color: #526259;
+
+        font-family: "JetBrains Mono", monospace;
+        font-size: 8px;
+        letter-spacing: .7px;
+    }
+
+    /* MOBILE */
+
+    @media (max-width: 700px) {
+
+        .page {
+            padding: 0 14px;
+        }
+
+        .system-status {
+            display: none;
+        }
+
+        .intro {
+            padding: 65px 0 45px;
+        }
+
+        .intro h1 {
+            font-size: 45px;
+            letter-spacing: -2px;
+        }
+
+        .panel-header {
+            align-items: flex-start;
+        }
+
+        .model-info {
+            display: none;
+        }
+
+        .action-row {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 18px;
+        }
+
+        button {
+            width: 100%;
+        }
+
+        .system-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .result-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .metric {
+            border-right: none;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .metric:last-child {
+            border-bottom: none;
+        }
+
+        footer {
+            flex-direction: column;
+            gap: 10px;
+        }
+    }
+
+</style>
+
+</head><body><div class="page"><!-- HEADER -->
+
+<header class="topbar">
+
+    <div class="brand">
+
+        <div class="brand-mark">
+            SG
+        </div>
+
+        <div>
+
+            <div class="brand-name">
+                SCAMGUARD
+            </div>
+
+            <div class="brand-sub">
+                THREAT ANALYSIS SYSTEM
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="system-status">
+
+        <span class="status-light"></span>
+
+        SYSTEM ONLINE
+
+    </div>
+
+</header>
+
+
+<!-- HERO -->
+
+<section class="intro">
+
+    <div class="terminal-label">
+
+        <span>01</span>
+
+        MESSAGE ANALYSIS
+
+    </div>
+
+
+    <h1>
+
+        Detect the threat<br>
+
+        <span>before you trust it.</span>
+
+    </h1>
+
+
+    <p>
+
+        Submit a suspicious message and let the
+        classification engine analyze its linguistic patterns.
+
+    </p>
+
+</section>
+
+
+<!-- ANALYZER -->
+
+<section class="analyzer">
+
+    <div class="panel-header">
+
+        <div>
+
+            <span class="panel-number">
+                INPUT
+            </span>
+
+            <h2>
+                Threat Analysis
+            </h2>
+
+        </div>
+
+
+        <div class="model-info">
+
+            <span>
+                MODEL
+            </span>
+
+            <strong>
+                LINEAR SVM
+            </strong>
+
+        </div>
+
+    </div>
+
+
+    <div class="terminal">
+
+        <div class="terminal-bar">
+
+            <div class="terminal-dots">
+
+                <span></span>
+                <span></span>
+                <span></span>
+
+            </div>
+
+            <span>
+                message_input
+            </span>
+
+            <span>
+                UTF-8
+            </span>
+
+        </div>
+
+
+        <textarea
+            id="message"
+            placeholder="Paste suspicious message here..."
+        ></textarea>
+
+    </div>
+
+
+    <div class="action-row">
+
+        <div class="input-hint">
+
+            <span>ENTER</span>
+            message to analyze
+
+        </div>
+
+
+        <button
+            id="analyzeBtn"
+            onclick="analyzeMessage()"
+        >
+
+            RUN ANALYSIS
+
+            <span>→</span>
+
+        </button>
+
+    </div>
+
+
+    <!-- RESULT -->
+
+    <div
+        id="result"
+        class="result"
+    >
+
+        <div class="result-header">
+
+            <div>
+
+                <div class="result-label">
+                    CLASSIFICATION RESULT
+                </div>
+
+                <div
+                    id="prediction"
+                    class="prediction"
+                >
+                    —
+                </div>
+
+            </div>
+
+
+            <div
+                id="risk"
+                class="risk"
+            >
+                —
+            </div>
+
+        </div>
+
+
+        <div class="result-grid">
+
+            <div class="metric">
+
+                <div class="metric-label">
+                    RISK LEVEL
+                </div>
+
+                <div
+                    id="riskText"
+                    class="metric-value"
+                >
+                    —
+                </div>
+
+            </div>
+
+
+            <div class="metric">
+
+                <div class="metric-label">
+                    DECISION SCORE
+                </div>
+
+                <div
+                    id="score"
+                    class="metric-value"
+                >
+                    —
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- THREAT INDICATORS -->
+
+        <div class="threat-indicators">
+
+            <div class="metric-label">
+                THREAT INDICATORS
+            </div>
+
+            <div id="indicators">
+                —
+            </div>
+
+        </div>
+
+
+        <div class="analysis-status">
+
+            <span class="status-light"></span>
+
+            MODEL ANALYSIS COMPLETE
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- INFORMATION -->
+
+<section class="system-grid">
+
+
+    <div class="info-card">
+
+        <div class="card-index">
+            02
+        </div>
+
+        <h3>
+            FEATURE ENGINE
+        </h3>
+
+        <p>
+            TF-IDF converts message text into numerical
+            features that the classification model can process.
+        </p>
+
+        <div class="card-tech">
+            TF-IDF / NLP
+        </div>
+
+    </div>
+
+
+    <div class="info-card">
+
+        <div class="card-index">
+            03
+        </div>
+
+        <h3>
+            CLASSIFIER
+        </h3>
+
+        <p>
+            Linear Support Vector Machine trained on
+            labeled spam and legitimate SMS messages.
+        </p>
+
+        <div class="card-tech">
+            LINEAR SVM
+        </div>
+
+    </div>
+
+
+    <div class="info-card">
+
+        <div class="card-index">
+            04
+        </div>
+
+        <h3>
+            THREAT RESPONSE
+        </h3>
+
+        <p>
+            Suspicious messages are flagged so users
+            can avoid interacting with potential scams.
+        </p>
+
+        <div class="card-tech">
+            REAL-TIME
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- FOOTER -->
+
+<footer>
+
+    <div>
+        SCAMGUARD // SECURITY RESEARCH UNIT
+    </div>
+
+    <div>
+        SIH 2026
+    </div>
+
+</footer>
+
+</div><script>
+
+async function analyzeMessage() {
+
+    const message =
+        document.getElementById("message").value;
+
+    const button =
+        document.getElementById("analyzeBtn");
+
+    const result =
+        document.getElementById("result");
+
+    const prediction =
+        document.getElementById("prediction");
+
+    const risk =
+        document.getElementById("risk");
+
+    const riskText =
+        document.getElementById("riskText");
+
+    const score =
+        document.getElementById("score");
+
+    const indicators =
+        document.getElementById("indicators");
+
+
+    if (message.trim() === "") {
+
+        alert("Enter a message to analyze.");
+
+        return;
+
+    }
+
+
+    button.disabled = true;
+
+    button.innerHTML =
+        'ANALYZING <span>...</span>';
+
+    result.classList.remove("show");
+
+
+    try {
+
+        const response = await fetch(
+            "/predict",
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+                    message: message
+                })
+            }
+        );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Prediction request failed"
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        result.classList.add("show");
+
+
+        /* CLASSIFICATION */
+
+        if (data.prediction === "SCAM") {
+
+            prediction.innerText =
+                "SCAM DETECTED";
+
+            prediction.className =
+                "prediction danger";
+
+            risk.className =
+                "risk danger-bg";
+
+        }
+
+        else {
+
+            prediction.innerText =
+                "MESSAGE SAFE";
+
+            prediction.className =
+                "prediction safe";
+
+            risk.className =
+                "risk safe-bg";
+
+        }
+
+
+        /* RISK */
+
+        risk.innerText =
+            data.risk;
+
+        riskText.innerText =
+            data.risk;
+
+
+        /* DECISION SCORE */
+
+        score.innerText =
+            Number(
+                data.decision_score
+            ).toFixed(4);
+
+
+        /* THREAT INDICATORS */
+
+        if (
+            !data.indicators ||
+            data.indicators.length === 0
+        ) {
+
+            indicators.innerHTML =
+                '<div class="no-threat">✓ No obvious threat indicators detected</div>';
+
+        }
+
+        else {
+
+            indicators.innerHTML =
+                data.indicators
+                    .map(
+                        item =>
+                        `<div class="indicator">⚠ ${item}</div>`
+                    )
+                    .join("");
+
+        }
+
+    }
+
+
+    catch (error) {
+
+        console.error(error);
+
+        alert(
+            "Unable to connect to ScamGuard."
+        );
+
+    }
+
+
+    button.disabled = false;
+
+    button.innerHTML =
+        'RUN ANALYSIS <span>→</span>';
+
+}
+
+</script></body></html>
