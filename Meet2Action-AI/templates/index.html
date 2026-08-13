@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Meet2Action AI</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #09090b;
+            color: #f4f4f5;
+            min-height: 100vh;
+        }
+
+        /* ---------------- NAVBAR ---------------- */
+
+        .navbar {
+            height: 72px;
+            border-bottom: 1px solid #27272a;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 7%;
+            background: rgba(9, 9, 11, 0.9);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 19px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+            background: #f4f4f5;
+            color: #09090b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+        }
+
+        .badge {
+            font-size: 11px;
+            color: #a1a1aa;
+            border: 1px solid #27272a;
+            padding: 5px 9px;
+            border-radius: 20px;
+        }
+
+        /* ---------------- HERO ---------------- */
+
+        .hero {
+            max-width: 1100px;
+            margin: auto;
+            padding: 75px 25px 40px;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #a1a1aa;
+            font-size: 13px;
+            margin-bottom: 20px;
+        }
+
+        .dot {
+            width: 7px;
+            height: 7px;
+            background: #22c55e;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #22c55e;
+        }
+
+        .hero h1 {
+            font-size: clamp(42px, 6vw, 72px);
+            line-height: 0.98;
+            letter-spacing: -4px;
+            max-width: 850px;
+        }
+
+        .hero h1 span {
+            color: #71717a;
+        }
+
+        .hero p {
+            margin-top: 25px;
+            max-width: 650px;
+            color: #a1a1aa;
+            font-size: 17px;
+            line-height: 1.7;
+        }
+
+        /* ---------------- UPLOAD CARD ---------------- */
+
+        .upload-card {
+            margin-top: 45px;
+            border: 1px solid #27272a;
+            border-radius: 22px;
+            background: #111113;
+            padding: 30px;
+            box-shadow: 0 20px 70px rgba(0, 0, 0, 0.35);
+        }
+
+        .upload-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 22px;
+        }
+
+        .upload-header h2 {
+            font-size: 18px;
+        }
+
+        .upload-header p {
+            color: #71717a;
+            font-size: 13px;
+        }
+
+        .drop-zone {
+            border: 1px dashed #3f3f46;
+            border-radius: 16px;
+            padding: 48px 20px;
+            text-align: center;
+            background: #0d0d0f;
+            transition: 0.2s;
+        }
+
+        .drop-zone:hover {
+            border-color: #71717a;
+            background: #121214;
+        }
+
+        .upload-icon {
+            width: 54px;
+            height: 54px;
+            margin: auto;
+            border-radius: 15px;
+            background: #18181b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 23px;
+            margin-bottom: 16px;
+        }
+
+        .drop-zone h3 {
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+
+        .drop-zone p {
+            color: #71717a;
+            font-size: 13px;
+            margin-bottom: 20px;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .file-button {
+            display: inline-block;
+            padding: 11px 18px;
+            border-radius: 10px;
+            background: #f4f4f5;
+            color: #09090b;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .file-button:hover {
+            transform: translateY(-1px);
+            background: #ffffff;
+        }
+
+        #file-name {
+            margin-top: 14px;
+            color: #a1a1aa;
+            font-size: 13px;
+        }
+
+        .analyze-button {
+            width: 100%;
+            margin-top: 20px;
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            background: #f4f4f5;
+            color: #09090b;
+            font-size: 14px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .analyze-button:hover {
+            background: #ffffff;
+            transform: translateY(-1px);
+        }
+
+        /* ---------------- RESULTS ---------------- */
+
+        .results {
+            max-width: 1100px;
+            margin: 20px auto 80px;
+            padding: 0 25px;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 45px 0 15px;
+        }
+
+        .section-title h2 {
+            font-size: 20px;
+        }
+
+        .section-title span {
+            color: #71717a;
+            font-size: 12px;
+        }
+
+        .transcript {
+            background: #111113;
+            border: 1px solid #27272a;
+            border-radius: 16px;
+            padding: 22px;
+            color: #a1a1aa;
+            line-height: 1.7;
+            font-size: 14px;
+        }
+
+        /* ---------------- TABLE ---------------- */
+
+        .table-container {
+            overflow-x: auto;
+            border: 1px solid #27272a;
+            border-radius: 16px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #111113;
+        }
+
+        th {
+            text-align: left;
+            padding: 16px 18px;
+            color: #71717a;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 1px solid #27272a;
+        }
+
+        td {
+            padding: 18px;
+            border-bottom: 1px solid #1f1f22;
+            font-size: 14px;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .person {
+            font-weight: 700;
+        }
+
+        .deadline {
+            display: inline-block;
+            padding: 5px 9px;
+            border-radius: 7px;
+            background: #18181b;
+            color: #d4d4d8;
+            font-size: 12px;
+        }
+
+        /* ---------------- FOOTER ---------------- */
+
+        footer {
+            border-top: 1px solid #27272a;
+            padding: 25px 7%;
+            color: #52525b;
+            font-size: 12px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* ---------------- RESPONSIVE ---------------- */
+
+        @media (max-width: 700px) {
+
+            .navbar {
+                padding: 0 20px;
+            }
+
+            .hero {
+                padding-top: 50px;
+            }
+
+            .hero h1 {
+                letter-spacing: -2px;
+            }
+
+            .upload-card {
+                padding: 20px;
+            }
+
+            footer {
+                padding: 20px;
+            }
+        }
+
+    </style>
+</head>
+
+
+<body>
+
+    <!-- NAVBAR -->
+
+    <nav class="navbar">
+
+        <div class="logo">
+            <div class="logo-icon">M</div>
+            Meet2Action
+        </div>
+
+        <div class="badge">
+            AI Meeting Intelligence
+        </div>
+
+    </nav>
+
+
+    <!-- HERO -->
+
+    <section class="hero">
+
+        <div class="eyebrow">
+            <span class="dot"></span>
+            Turn conversations into action
+        </div>
+
+        <h1>
+            Your meetings.<br>
+            <span>Automatically organized.</span>
+        </h1>
+
+        <p>
+            Upload a meeting recording and let AI transcribe the conversation
+            and identify the people, tasks, and deadlines hidden inside it.
+        </p>
+
+
+        <!-- UPLOAD -->
+
+        <div class="upload-card">
+
+            <div class="upload-header">
+
+                <div>
+                    <h2>Analyze a meeting</h2>
+                    <p>Upload your audio recording</p>
+                </div>
+
+                <div class="badge">
+                    MP3 · WAV · M4A
+                </div>
+
+            </div>
+
+
+            <form method="POST" enctype="multipart/form-data">
+
+                <div class="drop-zone">
+
+                    <div class="upload-icon">
+                        ↑
+                    </div>
+
+                    <h3>
+                        Drop your meeting recording here
+                    </h3>
+
+                    <p>
+                        or choose a file from your computer
+                    </p>
+
+                    <label for="audio" class="file-button">
+                        Choose audio file
+                    </label>
+
+                    <input
+                        type="file"
+                        id="audio"
+                        name="audio"
+                        accept=".mp3,.wav,.m4a"
+                        required
+                        onchange="showFileName()"
+                    >
+
+                    <div id="file-name">
+                        No file selected
+                    </div>
+
+                </div>
+
+
+                <button class="analyze-button" type="submit">
+                    Analyze Meeting →
+                </button>
+
+            </form>
+
+        </div>
+
+    </section>
+
+
+    <!-- RESULTS -->
+
+    {% if transcript %}
+
+    <section class="results">
+
+        <div class="section-title">
+
+            <h2>Transcript</h2>
+
+            <span>
+                Speech → Text
+            </span>
+
+        </div>
+
+        <div class="transcript">
+            {{ transcript }}
+        </div>
+
+
+        <div class="section-title">
+
+            <h2>Action items</h2>
+
+            <span>
+                {{ actions|length }} tasks detected
+            </span>
+
+        </div>
+
+
+        <div class="table-container">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+                        <th>Owner</th>
+                        <th>Task</th>
+                        <th>Deadline</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for action in actions %}
+
+                    <tr>
+
+                        <td class="person">
+                            {{ action.person }}
+                        </td>
+
+                        <td>
+                            {{ action.task }}
+                        </td>
+
+                        <td>
+                            <span class="deadline">
+                                {{ action.deadline }}
+                            </span>
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+    {% endif %}
+
+
+    <!-- FOOTER -->
+
+    <footer>
+
+        <span>
+            Meet2Action AI
+        </span>
+
+        <span>
+            Speech-to-Text · NLP · Action Extraction
+        </span>
+
+    </footer>
+
+
+    <script>
+
+        function showFileName() {
+
+            const fileInput = document.getElementById("audio");
+            const fileName = document.getElementById("file-name");
+
+            if (fileInput.files.length > 0) {
+
+                fileName.textContent =
+                    "Selected: " + fileInput.files[0].name;
+
+            } else {
+
+                fileName.textContent =
+                    "No file selected";
+
+            }
+
+        }
+
+    </script>
+
+</body>
+
+</html>

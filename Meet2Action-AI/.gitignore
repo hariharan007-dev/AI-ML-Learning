@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# Audio files
+uploads/
+*.mp3
+*.wav
+*.m4a
+*.ogg
+*.flac
+
+# Environment variables
+.env
+.env.*
+
+# VS Code
+.vscode/
+
+# Other IDE files
+.idea/
+
+# Python build files
+*.egg-info/
+dist/
+build/
+
+# OS files
+.DS_Store
+Thumbs.db
